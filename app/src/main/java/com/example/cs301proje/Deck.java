@@ -20,6 +20,11 @@ public class Deck {
         this.cards = cards;
     }
 
+    public Deck(int i) {
+        ArrayList<Card> c = new ArrayList<Card>(i);
+        this.cards = c;
+    }
+
     // Copy ctor for Deck
     public Deck(Deck orig) {
         this.cards = new ArrayList<Card>();
@@ -29,6 +34,8 @@ public class Deck {
     public void addCard(Card card) {
         this.cards.add(card);
     }
+
+    public ArrayList<Card> returnCards() { return this.cards; }
 
     /**
      * This method generates a full deck of 52 cards. It then shuffles all of those cards.

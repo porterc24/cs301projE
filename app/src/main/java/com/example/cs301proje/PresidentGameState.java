@@ -12,6 +12,7 @@ public class PresidentGameState {
 
     ArrayList<HumanPlayer> players;
     TurnCounter currTurn;
+    Deck inPlayPile;
     Deck discardPile;
     CurrentState state;
 
@@ -24,6 +25,7 @@ public class PresidentGameState {
         this.currentStage = 0;
         this.maxPlayers = players.size();
         this.discardPile = new Deck();
+        this.inPlayPile = new Deck(4);
 
         this.currTurn = new TurnCounter(this.maxPlayers);
 
@@ -136,6 +138,11 @@ public class PresidentGameState {
         return false;
     }
 
+    public boolean isValidMove(Deck deck) {
+        //TODO
+        return true;
+    }
+
 
 
     public boolean playCard(HumanPlayer player) {
@@ -152,8 +159,32 @@ public class PresidentGameState {
         return false;
     }
 
-    public boolean selectCard(HumanPlayer player) {
-        return true;
+    public Deck selectCards(HumanPlayer player) {
+        // looping through the player's cards and adding the valid ones to the validCards deck
+        for (Card card: player.deck.cards) {
+            if (card.getRank() >= inPlayPile.returnCards().get(0).getRank()) {
+                player.validCards.addCard(card);
+            }
+        }
+
+        // repeat while the player's selectedCards doesn't equal the inPlayPile's cards
+        // i.e. the player only selects one higher card when a pair of cards is in play
+        while (player.selectedCards.cards.size() < inPlayPile.cards.size()) {
+            // clear the deck from any past iterations of the loop
+            player.clearDeck(player.selectedCards);
+
+            // picking a random card from the validCards deck to play
+            Card selectedMoveCard = player.validCards.cards.get((int) (Math.random() * player.validCards.cards.size()));
+
+            // looping through the player's valid cards and adding all of the same rank cards to the
+            // selectedCards deck
+            for (Card card: player.validCards.cards) {
+                if (card.getRank() == selectedMoveCard.getRank()) {
+                    player.selectedCards.addCard(card);
+                }
+            }
+        }
+        return player.selectedCards;
     }
 
     public int getMaxPlayers() {
