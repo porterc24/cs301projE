@@ -152,15 +152,30 @@ public class PresidentGameState {
 
     // potential bug - currently initializing inPlayPile with a length of 0, may mess up when
 
-    public boolean isValidMove(Deck deck) {
-        //TODO
-        if (deck.cards.get(0).getRank() > inPlayPile.cards.get(0).getRank()) {
-            if (deck.cards.size() >= inPlayPile.cards.size()) {
-                return true;
+    public boolean playRightAmount(Deck deck) {
+        if (inPlayPile.cards != null) {
+            if (inPlayPile.cards.get(0).getRank() == inPlayPile.cards.get(1).getRank()) {
+                if (inPlayPile.cards.get(1).getRank() == inPlayPile.cards.get(2).getRank()) {
+                    if (inPlayPile.cards.get(2).getRank() == inPlayPile.cards.get(3).getRank()) {
+                        this.minPlayCards = 4;
+                    }
+                    this.minPlayCards = 3;
+                }
+                this.minPlayCards = 2;
+            } else {
+                this.minPlayCards = 1;
             }
         }
-        // cannot play cards, illegal move
-        // with this implementation shouldn't be running
+        else{
+            this.minPlayCards = 0;
+        }
+        return true;
+    }
+
+    public boolean higherRank(HumanPlayer player){
+        if(inPlayPile.cards.get(0).getRank() > player.getSelectedCards().cards.get(0).getRank()){
+            return true;
+        }
         return false;
     }
 
@@ -170,10 +185,10 @@ public class PresidentGameState {
      * @return boolean
      */
     public boolean playCard(HumanPlayer player) {
-        if (isPlayerTurn(player)) {
+        if (isPlayerTurn(player) && player.selectedCards.cards.size() > minPlayCards && higherRank(player)) {
             for (int i = 0; i < player.selectedCards.cards.size(); i++) {
                 inPlayPile.cards.remove(i);
-                inPlayPile.cards.add(i, player.selectedCards.cards.get(i));
+                inPlayPile.cards.add(0, player.selectedCards.cards.get(i));
             }
             return true;
         }
@@ -196,7 +211,6 @@ public class PresidentGameState {
 
     // function is edited for Proj. E, and isn't functional for gameplay
 
-    public
 
 
 /*
@@ -259,9 +273,7 @@ public class PresidentGameState {
         return currTurn;
     }
 
-    public Deck getDiscardPile() {
-        return discardPile;
-    }
+
 
     public boolean endGame(ArrayList<HumanPlayer> players){
         int out = 0;

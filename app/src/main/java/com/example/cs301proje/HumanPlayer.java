@@ -21,6 +21,12 @@ public class HumanPlayer {
         this.selectedCards = new Deck();
     }
 
+    public boolean canSelect(Card card){
+        card = PresidentGameState.getRecent();
+        return true;
+    }
+
+
     public HumanPlayer() {
         this.id = UUID.randomUUID();
         this.deck = new Deck();
