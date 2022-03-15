@@ -5,14 +5,14 @@ package com.example.cs301proje;
  */
 public class PlayCardAction extends GameAction{
 
-    private Deck played_cards; // The cards the player has selected and decided to play
+    private CardStack played_cards; // The cards the player has selected and decided to play
 
-    public PlayCardAction(HumanPlayer sender, Deck played_cards) {
+    public PlayCardAction(HumanPlayer sender, CardStack played_cards) {
         super(sender);
         this.played_cards = played_cards;
     }
 
-    public Deck getPlayedCards() {
+    public CardStack getPlayedCards() {
         return played_cards;
     }
 }

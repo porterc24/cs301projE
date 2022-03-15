@@ -72,6 +72,29 @@ public class Deck {
         shuffle();
     }
 
+    public void generateRiggedDeck() {
+        ArrayList<Card> deck_cards = new ArrayList<>();
+        deck_cards.add(new Card(1, 1));
+        deck_cards.add(new Card(2, 1));
+        deck_cards.add(new Card(3, 1));
+        deck_cards.add(new Card(4, 1));
+        deck_cards.add(new Card(5, 1));
+        deck_cards.add(new Card(5, 1));
+        deck_cards.add(new Card(6, 1));
+        deck_cards.add(new Card(6, 1));
+        deck_cards.add(new Card(6, 1));
+        deck_cards.add(new Card(7, 1));
+        deck_cards.add(new Card(7, 1));
+        deck_cards.add(new Card(7, 1));
+        deck_cards.add(new Card(10, 1));
+
+        for (int i = 0; i < 4; i++) {
+            for (int j = 0; j < 13; j++) {
+                this.cards.add(deck_cards.get(j));
+            }
+        }
+    }
+
     public int getNumCards() {
         return this.cards.size();
     }
@@ -90,5 +113,9 @@ public class Deck {
         });
 
         return output.toString();
+    }
+
+    public void addCards(ArrayList<Card> that_cards) {
+        this.cards.addAll(that_cards);
     }
 }

@@ -1,12 +1,13 @@
 package com.example.cs301proje;
 
+import java.util.List;
 import java.util.UUID;
 
 // TODO: Make a 'Player' parent/abstract class
 public class HumanPlayer {
     Deck deck;
     Deck validCards;
-    Deck selectedCards;
+    CardStack selectedCards;
 
     PresidentGame game;
 
@@ -22,7 +23,7 @@ public class HumanPlayer {
         this.deck = deck;
         this.score = 0;
         this.validCards = new Deck();
-        this.selectedCards = new Deck();
+        this.selectedCards = new CardStack();
     }
 
     public HumanPlayer(PresidentGame game) {
@@ -31,7 +32,7 @@ public class HumanPlayer {
         this.deck = new Deck();
         this.score = 0;
         this.validCards = new Deck();
-        this.selectedCards = new Deck();
+        this.selectedCards = new CardStack();
     }
 
     /**
@@ -55,13 +56,29 @@ public class HumanPlayer {
     }
 
     public void selectCard(Card card) {
-        card.setSelected(true);
-        this.selectedCards.addCard(card);
+        card.setSelected(true); // TODO is this necessary?
+        this.selectedCards.add(card);
+    }
+
+    public void selectCards(List<Card> cards) {
+        this.selectedCards.set(cards);
     }
 
     public void deselectCard(Card card) {
         card.setSelected(false);
-        this.selectedCards.removeCard(card);
+        this.selectedCards.set(card);
+    }
+
+    public boolean playCards() {
+
+        boolean flag = this.game.sendInfo(new PlayCardAction(this, this.selectedCards));
+
+        // If the card was successfully played...
+        if (flag) {
+            this.selectedCards.clear();
+        }
+
+        return flag;
     }
 
     public Deck getDeck() {
@@ -74,7 +91,7 @@ public class HumanPlayer {
 
     public boolean getIsOut() {return this.isOut;}
 
-    public Deck getSelectedCards() { return this.selectedCards; }
+    public CardStack getSelectedCardStack() { return this.selectedCards; }
 
     public void clearDeck(Deck deck) {
         for (int i = 0; i < deck.cards.size(); i++) {

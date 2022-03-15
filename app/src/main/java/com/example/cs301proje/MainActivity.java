@@ -3,11 +3,13 @@ package com.example.cs301proje;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -49,9 +51,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         // Proj E testing:
         // PLAYERS MUST BE >= 2
         // TODO: Meta-tester method that tests all of these for different numbers of players
+        // TODO: Use deep copy for testing and have all these be called by Run Test button
         testDealCards(game_state.maxPlayers);
         testTurnRotation(game_state.maxPlayers);
         testClearDecks(game_state.maxPlayers);
+        testCardStack();
+        testPlayCards(game_state.maxPlayers);
     }
 
     /**
@@ -60,7 +65,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
      */
     public void testDealCards(int players) {
 
-        this.game.print("*****BEGINNING TEST 1*****");
+        this.game.print("*****TEST 1 BEGIN*****");
         this.game.getGameState().dealCards();
 
         int flag = 0;
@@ -153,6 +158,135 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             System.err.println("Test 3 failed.");
             System.exit(-10234);
         }
+    }
+
+    /**
+     * For ensuring that the CardStack's functions work properly. TODO This test is unfinished.
+     */
+    public void testCardStack() {
+
+        this.game.print("*****TEST 4 BEGIN*****");
+        CardStack card_stack = new CardStack();
+        card_stack.set(new Card(1,1));
+        card_stack.print();
+
+        for (int i = 0; i < card_stack.getStackSize(); i++) {
+            this.game.print("Card Stack: " + card_stack.getCard(i).getRank());
+        }
+
+        ArrayList<Card> cards = new ArrayList<>();
+        cards.add(new Card(2, 3));
+        cards.add(new Card(2, 3));
+        cards.add(new Card(2, 3));
+
+        card_stack.set(cards);
+
+        for (int i = 0; i < card_stack.getStackSize(); i++) {
+            this.game.print("Card Stack: " + card_stack.getCard(i).getRank());
+        }
+
+        this.game.print("*****TEST 4 SUCCESS*****");
+
+    }
+
+    /**
+     * This method tests the playing card functionality. It's pretty verbose at the moment, but it's
+     * the bare minimum and it works.
+     * TODO make this better!
+     * @param players
+     */
+    public void testPlayCards(int players) {
+
+        this.game.print("*****TEST 5 BEGIN*****");
+        boolean success = true;
+        Deck rigged_deck = new Deck();
+        rigged_deck.generateRiggedDeck();
+
+        PresidentGameState game_state = this.game.getGameState();
+        game_state.dealRiggedCards(rigged_deck);
+
+        HumanPlayer player1 = game_state.getPlayerFromTurn();
+        // Play a rank 2 card...
+        player1.selectCard(player1.getDeck().cards.get(1));
+
+        boolean flag = player1.playCards();
+        if (flag) {
+            this.game.print(game_state.getPlayPile().toString());
+        }
+
+        HumanPlayer player2 = game_state.getPlayerFromTurn();
+        // Play a rank 3 card...
+        player2.selectCard(player2.getDeck().cards.get(3));
+
+        Log.i("Deck: ", player1.getDeck().toString());
+
+        flag = player2.playCards();
+        if (flag) {
+            this.game.print(game_state.getPlayPile().toString());
+        }
+
+        // Illegal move...
+        player2.selectCard(player2.getDeck().cards.get(5));
+        flag = player2.playCards();
+        if (flag) {
+            this.game.print(game_state.getPlayPile().toString());
+        }
+
+        // Playing multiple cards at once
+        ArrayList<Card> two_cards = new ArrayList<Card>();
+        player1.selectCard(player1.getDeck().cards.get(6));
+        player1.selectCard(player1.getDeck().cards.get(7));
+        player1.selectCard(player1.getDeck().cards.get(8));
+
+        flag = player1.playCards();
+        if (flag) {
+            this.game.print(game_state.getPlayPile().toString());
+        } else {
+            this.game.print("Invalid move!");
+        }
+
+
+        // Attempting to play a single card
+        player2.selectedCards.clear();
+        player2.selectCard(player2.getDeck().cards.get(9));
+        flag = player2.playCards();
+        if (flag) {
+            this.game.print(game_state.getPlayPile().toString());
+            success = false;
+        } else {
+            this.game.print("Invalid move!");
+        }
+
+        // Attempting to play 2 cards
+        player2.selectCard(player2.getDeck().cards.get(9));
+        flag = player2.playCards();
+        if (flag) {
+            this.game.print(game_state.getPlayPile().toString());
+            success = false;
+        } else {
+            this.game.print("Invalid move!");
+        }
+
+
+        // Attempting to play 3 cards
+        player2.selectCard(player2.getDeck().cards.get(9));
+        flag = player2.playCards();
+        if (flag) {
+            this.game.print(game_state.getPlayPile().toString());
+        } else {
+            this.game.print("Invalid move!");
+        }
+
+
+        Log.i("RIGGED SIZE:", "" + rigged_deck.getNumCards());
+
+        if (success) {
+            this.game.print("*****TEST 5 SUCCESS*****");
+        } else {
+            System.err.println("Test 5 failed.");
+            System.exit(-10234);
+        }
+
     }
 
     @Override

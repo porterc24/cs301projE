@@ -14,7 +14,7 @@ public class PresidentGameState {
 
     ArrayList<HumanPlayer> players;
     TurnCounter currTurn;
-    Deck inPlayPile;
+    CardStack inPlayPile;
     Deck discardPile;
     CurrentState state;
     PresidentGame game;
@@ -28,10 +28,13 @@ public class PresidentGameState {
         this.currentStage = 0;
         this.maxPlayers = players.size();
         this.discardPile = new Deck();
-        this.inPlayPile = new Deck(0);
         this.game = game;
-
         this.currTurn = new TurnCounter(this.maxPlayers);
+
+        // At the start of the game, the first player is the first person to put down a card.
+        // The first card is set to null so that the game knows it's valid for that player to
+        // put down a card on the first turn.
+        this.inPlayPile = new CardStack();
 
         state = CurrentState.INIT_ARRAYS;
 
@@ -49,7 +52,7 @@ public class PresidentGameState {
         // Mutable class types
         this.discardPile = new Deck(orig.discardPile);
         this.currTurn = new TurnCounter(orig.currTurn);
-        this.inPlayPile = new Deck(orig.inPlayPile);
+        this.inPlayPile = new CardStack(orig.inPlayPile);
         this.game = orig.game;
 
         state = CurrentState.INIT_OBJECTS;
@@ -85,9 +88,6 @@ public class PresidentGameState {
                 //selects a random card of the 52 in masterDeck
                 Card randomCard = (masterDeck.cards.get((int) Math.random() * masterDeck.MAX_CARDS));
 
-                //adds the card to the players deck/hand and removes it from masterDeck
-                //player.deck.cards.add(randomCard);
-                //this.game.print("Sent card #" + i + " to player " + player.getId());
                 this.game.sendInfo(new DealCardAction(
                         null,
                         randomCard
@@ -103,6 +103,36 @@ public class PresidentGameState {
         });
 
         state = CurrentState.MAIN_PLAY;
+    }
+
+    /**
+     * Instead of generating a master deck, this method takes a pre-made deck and deals it out
+     * to the players. Useful for testing.
+     */
+    public void dealRiggedCards(Deck rigged_deck) {
+        state = CurrentState.GAME_SETUP;
+
+        for (HumanPlayer player : this.players) {
+            for (int i = 0; i < (52 / players.size()); i++) {
+                Card riggedCard = (rigged_deck.cards.get(i));
+                this.game.sendInfo(new DealCardAction(
+                        null,
+                        riggedCard
+                ), player);
+                //Log.i("DECKS", "Value of i: " + i);
+            }
+        }
+
+        // THIS IS FOR TESTING/DEBUG
+        this.players.forEach(p -> {
+            Log.i("RIGGED","PLAYER: " + p.getDeck().toString());
+        });
+
+        state = CurrentState.MAIN_PLAY;
+    }
+
+    public CardStack getPlayPile() {
+        return inPlayPile;
     }
 
     /**
@@ -162,8 +192,8 @@ public class PresidentGameState {
 
     public boolean isValidMove(Deck deck) {
         //TODO
-        if (deck.cards.get(0).getRank() > inPlayPile.cards.get(0).getRank()) {
-            if (deck.cards.size() >= inPlayPile.cards.size()) {
+        if (deck.cards.get(0).getRank() > inPlayPile.getStackRank()) {
+            if (deck.cards.size() >= inPlayPile.getStackSize()) {
                 return true;
             }
         }
@@ -177,12 +207,11 @@ public class PresidentGameState {
      * @param player
      * @return boolean
      */
-    public boolean playCard(HumanPlayer player) {
+    public boolean playCards(HumanPlayer player) {
         if (isPlayerTurn(player)) {
-            for (int i = 0; i < player.selectedCards.cards.size(); i++) {
-                inPlayPile.cards.remove(i);
-                inPlayPile.cards.add(i, player.selectedCards.cards.get(i));
-            }
+            inPlayPile.set(player.getSelectedCardStack().getCards());
+            inPlayPile.print();
+            this.currTurn.nextTurn();
             return true;
         }
         return false;
@@ -211,25 +240,26 @@ public class PresidentGameState {
 
     // function is edited for Proj. E, and isn't functional for gameplay
 
-    public Deck selectCards(HumanPlayer player) {
-        player.clearDeck(player.selectedCards);
+    public CardStack selectCards(HumanPlayer player) {
+        player.getSelectedCardStack().clear();
+        ArrayList<Card> card_buffer = new ArrayList<>();
 
         // checking if the player is the first to play cards
-        if (inPlayPile.cards.size() == 0) {
+        if (inPlayPile.getStackSize() == 0) {
             // pick a random card from the player's deck
             Card card = player.deck.cards.get((int) Math.random() * player.deck.cards.size());
 
             // add all instances of that card to the selectedCards deck
             for (Card c: player.deck.cards) {
                 if (c.getRank() == card.getRank()) {
-                    player.selectedCards.addCard(c);
+                    card_buffer.add(c);
                 }
             }
         }
         else {
             // looping through the player's cards and adding the valid ones to the validCards deck
             for (Card card: player.deck.cards) {
-                if (card.getRank() >= inPlayPile.returnCards().get(0).getRank()) {
+                if (card.getRank() >= inPlayPile.getStackRank()) {
                     player.validCards.addCard(card);
                 }
             }
@@ -238,9 +268,9 @@ public class PresidentGameState {
         // repeat while the player's selectedCards doesn't equal the inPlayPile's cards
         // i.e. the player only selects one higher card when a pair of cards is in play
 
-        while (player.selectedCards.cards.size() < inPlayPile.cards.size()) {
+        while (player.selectedCards.getStackSize() < inPlayPile.getStackSize()) {
             // clear the deck from any past iterations of the loop
-            player.clearDeck(player.selectedCards);
+            player.getSelectedCardStack().clear();
 
             // picking a random card from the validCards deck to play
             Card selectedMoveCard = player.validCards.cards.get((int) (Math.random() * player.validCards.cards.size()));
@@ -249,7 +279,7 @@ public class PresidentGameState {
             // selectedCards deck
             for (Card card: player.validCards.cards) {
                 if (card.getRank() == selectedMoveCard.getRank()) {
-                    player.selectedCards.addCard(card);
+                    player.selectedCards.add(card);
                 }
             }
         }
@@ -269,10 +299,26 @@ public class PresidentGameState {
         // NOT TESTED! Have no idea if this will work correctly!
         if (action instanceof PlayCardAction) {
             HumanPlayer player = action.getSender();
+            PlayCardAction pca = (PlayCardAction) action;
 
-            if (isPlayerTurn(player) && isValidMove(player.getSelectedCards())) {
-                playCard(player);
-                return true;
+            if (isPlayerTurn(player)) {
+                if (this.inPlayPile.getStackSize() == 0) { // If it's the very first turn...
+                    this.game.print("Playing first card.");
+                    playCards(player);
+                    return true;
+                }
+
+                CardStack selected_cards = pca.getPlayedCards();
+                // Rules for playing cards
+                if (this.inPlayPile.getStackSize() <= selected_cards.getStackSize()) {
+                    if (this.inPlayPile.getStackRank() < selected_cards.getStackRank()) {
+                        this.game.print("Card rank is greater. Playing card.");
+                        playCards(player);
+                        return true;
+                    }
+                }
+
+                return false;
             } else {
                 return false;
             }
