@@ -134,17 +134,18 @@ public class PresidentGameState {
      * @return TRUE if it's the player's turn, FALSE if not
      */
     public boolean isPlayerTurn(HumanPlayer player) {
-        for (int i = 0; i < maxPlayers; i++) {
-            if ((i+1) == currTurn.turn) { // Need to add '1' to 'i' because turns start from 1
-                if (player.getId() == players.get(i).getId()) {
-                    return true;
-                }
-                else {
-                    return false;
-                }
-            }
+        if (getPlayerFromTurn().getId().equals(player.getId())) {
+            return true;
         }
         return false;
+    }
+
+    /**
+     * Returns the HumanPlayer who's turn it is.
+     * @return
+     */
+    public HumanPlayer getPlayerFromTurn() {
+        return this.players.get(currTurn.turn-1); // Turn counter starts from 1
     }
 
     /**

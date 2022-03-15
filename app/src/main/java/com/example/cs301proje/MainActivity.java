@@ -47,7 +47,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         game.setGameState(game_state);
 
         // Proj E testing:
+        // PLAYERS MUST BE > 2
         testDealCards(game_state.maxPlayers);
+        testTurnRotation(game_state.maxPlayers);
     }
 
     /**
@@ -75,6 +77,43 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
+    /**
+     * This test ensures that the TurnCounter, pass() method in the Player class, and the
+     * isPlayerTurn() method in the GameState class are functioning.
+     */
+    public void testTurnRotation(int players) {
+
+        this.game.print("*****TEST 2 BEGIN*****");
+
+        HumanPlayer player1 = this.game.getPlayers().get(0);
+        HumanPlayer player2 = this.game.getPlayers().get(1);
+
+        PresidentGameState game_state = this.game.getGameState();
+
+        boolean success = true;
+
+        for (int i = 0; i < players; i++) {
+            this.game.print("Current turn: " + game_state.getPlayerFromTurn().getId());
+            HumanPlayer player = game_state.getPlayers().get(i);
+            player.pass();
+            if (game_state.getPlayerFromTurn().getId().equals(player.getId())) {
+                success = false;
+            }
+        }
+
+        // Now try passing when it's not their turn:
+        if (game_state.getPlayers().get(1).pass()) {
+            success = false;
+        }
+
+        if (success) {
+            this.game.print("*****TEST 2 SUCCEEDED*****");
+        } else {
+            System.err.println("Test 2 failed.");
+            System.exit(-10234);
+        }
+
+    }
 
     @Override
     public void onClick(View view) {
