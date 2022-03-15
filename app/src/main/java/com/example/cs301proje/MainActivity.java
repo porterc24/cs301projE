@@ -47,7 +47,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         game.setGameState(game_state);
 
         // Proj E testing:
-        // PLAYERS MUST BE > 2
+        // PLAYERS MUST BE >= 2
+        // TODO: Meta-tester method that tests all of these for different numbers of players
         testDealCards(game_state.maxPlayers);
         testTurnRotation(game_state.maxPlayers);
         testClearDecks(game_state.maxPlayers);
