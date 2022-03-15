@@ -4,6 +4,8 @@ import android.util.Log;
 import java.util.ArrayList;
 
 public class PresidentGameState {
+    // TODO
+    // implement a method that deals with invalid moves (when a player cannot play a card)
 
     // IMPORTANT: If you add a new instance variable, make sure you update the
     // deep copy ctor!!!!!
@@ -25,7 +27,7 @@ public class PresidentGameState {
         this.currentStage = 0;
         this.maxPlayers = players.size();
         this.discardPile = new Deck();
-        this.inPlayPile = new Deck(4);
+        this.inPlayPile = new Deck(0);
 
         this.currTurn = new TurnCounter(this.maxPlayers);
 
@@ -47,6 +49,7 @@ public class PresidentGameState {
         // Mutable class types
         this.discardPile = new Deck(orig.discardPile);
         this.currTurn = new TurnCounter(orig.currTurn);
+        this.inPlayPile = new Deck(orig.inPlayPile);
 
         state = CurrentState.INIT_OBJECTS;
     }
@@ -138,15 +141,41 @@ public class PresidentGameState {
         return false;
     }
 
+    /**
+     * checks that the first index of the passed deck (selectedCards)'s rank is higher than the
+     * first index of the inPlayPile's rank, and whether the length of the (selectedCards) is longer
+     * than or equal to the inPlayPile's length
+     *
+     * inPlayPile is a max length 4, so
+     * @param deck
+     * @return
+     */
+
+    // potential bug - currently initializing inPlayPile with a length of 0, may mess up when
+
     public boolean isValidMove(Deck deck) {
         //TODO
-        return true;
+        if (deck.cards.get(0).getRank() > inPlayPile.cards.get(0).getRank()) {
+            if (deck.cards.size() >= inPlayPile.cards.size()) {
+                return true;
+            }
+        }
+        // cannot play cards, illegal move
+        // with this implementation shouldn't be running
+        return false;
     }
 
-
-
+    /**
+     * "plays" the card to the top of the inPlayPile, returns true if successful, else returns false
+     * @param player
+     * @return boolean
+     */
     public boolean playCard(HumanPlayer player) {
         if (isPlayerTurn(player)) {
+            for (int i = 0; i < player.selectedCards.cards.size(); i++) {
+                inPlayPile.cards.remove(i);
+                inPlayPile.cards.add(i, player.selectedCards.cards.get(i));
+            }
             return true;
         }
         return false;
@@ -159,16 +188,42 @@ public class PresidentGameState {
         return false;
     }
 
+    /**
+     * loops through the players hand and finds the valid cards, then selects an equal amount of a
+     * valid card rank (i.e. two 9s, three Kings etc.)
+     * @param player
+     * @return Deck
+     */
+
+    // function is edited for Proj. E, and isn't functional for gameplay
+
     public Deck selectCards(HumanPlayer player) {
-        // looping through the player's cards and adding the valid ones to the validCards deck
-        for (Card card: player.deck.cards) {
-            if (card.getRank() >= inPlayPile.returnCards().get(0).getRank()) {
-                player.validCards.addCard(card);
+        player.clearDeck(player.selectedCards);
+
+        // checking if the player is the first to play cards
+        if (inPlayPile.cards.size() == 0) {
+            // pick a random card from the player's deck
+            Card card = player.deck.cards.get((int) Math.random() * player.deck.cards.size());
+
+            // add all instances of that card to the selectedCards deck
+            for (Card c: player.deck.cards) {
+                if (c.getRank() == card.getRank()) {
+                    player.selectedCards.addCard(c);
+                }
+            }
+        }
+        else {
+            // looping through the player's cards and adding the valid ones to the validCards deck
+            for (Card card: player.deck.cards) {
+                if (card.getRank() >= inPlayPile.returnCards().get(0).getRank()) {
+                    player.validCards.addCard(card);
+                }
             }
         }
 
         // repeat while the player's selectedCards doesn't equal the inPlayPile's cards
         // i.e. the player only selects one higher card when a pair of cards is in play
+
         while (player.selectedCards.cards.size() < inPlayPile.cards.size()) {
             // clear the deck from any past iterations of the loop
             player.clearDeck(player.selectedCards);
