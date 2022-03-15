@@ -196,6 +196,12 @@ public class PresidentGameState {
         return false;
     }
 
+    public void clearDecks() {
+        this.players.forEach(p -> {
+            this.game.sendInfo(new ClearDeckAction(null), p);
+        });
+    }
+
     /**
      * loops through the players hand and finds the valid cards, then selects an equal amount of a
      * valid card rank (i.e. two 9s, three Kings etc.)

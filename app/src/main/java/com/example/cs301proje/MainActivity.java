@@ -50,6 +50,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         // PLAYERS MUST BE > 2
         testDealCards(game_state.maxPlayers);
         testTurnRotation(game_state.maxPlayers);
+        testClearDecks(game_state.maxPlayers);
     }
 
     /**
@@ -123,6 +124,34 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             System.exit(-10234);
         }
 
+    }
+
+    /**
+     * This test ensures that the clearDecks() method in the GameState works. It clears the decks,
+     * then checks to make sure that there are no cards in any of the player's decks.
+     * @param players
+     */
+    public void testClearDecks(int players) {
+        this.game.print("*****TEST 3 BEGIN*****");
+        PresidentGameState game_state = this.game.getGameState();
+        game_state.clearDecks();
+
+        boolean success = true;
+
+        // Checking that there are no cards in any player decks...
+        for (int i = 0; i < players; i++) {
+            HumanPlayer player = game_state.getPlayers().get(i);
+            if (player.getDeck().getNumCards() != 0) {
+                success = false;
+            }
+        }
+
+        if (success) {
+            this.game.print("*****TEST 3 SUCCESS*****");
+        } else {
+            System.err.println("Test 3 failed.");
+            System.exit(-10234);
+        }
     }
 
     @Override

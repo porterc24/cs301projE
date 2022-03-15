@@ -42,6 +42,10 @@ public class HumanPlayer {
         if (action instanceof DealCardAction) {
             this.deck.addCard(((DealCardAction) action).getCard());
         }
+
+        if (action instanceof ClearDeckAction) {
+            this.deck = new Deck();
+        }
     }
         /**
          * Executes a pass action on this turn. TODO: better message
