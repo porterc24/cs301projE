@@ -15,8 +15,8 @@ public class PresidentGameState {
     ArrayList<HumanPlayer> players;
     TurnCounter currTurn;
     Deck inPlayPile;
-    Deck discardPile;
     CurrentState state;
+    int minPlayCards;
 
     /**
      * Default setup for a game.
@@ -26,8 +26,7 @@ public class PresidentGameState {
         this.players = players;
         this.currentStage = 0;
         this.maxPlayers = players.size();
-        this.discardPile = new Deck();
-        this.inPlayPile = new Deck(0);
+        this.inPlayPile = new Deck();
 
         this.currTurn = new TurnCounter(this.maxPlayers);
 
@@ -197,6 +196,10 @@ public class PresidentGameState {
 
     // function is edited for Proj. E, and isn't functional for gameplay
 
+    public
+
+
+/*
     public Deck selectCards(HumanPlayer player) {
         player.clearDeck(player.selectedCards);
 
@@ -241,6 +244,8 @@ public class PresidentGameState {
         }
         return player.selectedCards;
     }
+
+ */
 
     public int getMaxPlayers() {
         return maxPlayers;
