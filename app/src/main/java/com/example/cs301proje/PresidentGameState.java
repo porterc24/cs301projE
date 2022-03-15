@@ -17,17 +17,19 @@ public class PresidentGameState {
     Deck inPlayPile;
     Deck discardPile;
     CurrentState state;
+    PresidentGame game;
 
     /**
      * Default setup for a game.
      * @param players The players to be added to the game
      */
-    public PresidentGameState(ArrayList<HumanPlayer> players) {
+    public PresidentGameState(ArrayList<HumanPlayer> players, PresidentGame game) {
         this.players = players;
         this.currentStage = 0;
         this.maxPlayers = players.size();
         this.discardPile = new Deck();
         this.inPlayPile = new Deck(0);
+        this.game = game;
 
         this.currTurn = new TurnCounter(this.maxPlayers);
 
@@ -50,6 +52,7 @@ public class PresidentGameState {
         this.discardPile = new Deck(orig.discardPile);
         this.currTurn = new TurnCounter(orig.currTurn);
         this.inPlayPile = new Deck(orig.inPlayPile);
+        this.game = orig.game;
 
         state = CurrentState.INIT_OBJECTS;
     }
@@ -73,19 +76,24 @@ public class PresidentGameState {
      * it takes out slices of that master deck and deals them
      * out to the players.
      */
-    private void dealCards() {
+    public void dealCards() {
         state = CurrentState.GAME_SETUP;
         Deck masterDeck = new Deck(new ArrayList<Card>());
         masterDeck.generateMasterDeck();
 
 
-        for (HumanPlayer player: this.players) {
+        for (HumanPlayer player : this.players) {
             for (int i = 0; i < (52 / players.size()); i++) {
                 //selects a random card of the 52 in masterDeck
                 Card randomCard = (masterDeck.cards.get((int) Math.random() * masterDeck.MAX_CARDS));
 
                 //adds the card to the players deck/hand and removes it from masterDeck
-                player.deck.cards.add(randomCard);
+                //player.deck.cards.add(randomCard);
+                this.game.print("Sent card #" + i + " to player " + player.getId());
+                this.game.sendInfo(new DealCardAction(
+                        null,
+                        randomCard
+                ), player);
                 masterDeck.cards.remove(randomCard);
                 //Log.i("DECKS", "Value of i: " + i);
             }

@@ -35,17 +35,17 @@ public class HumanPlayer {
     }
 
     /**
-     * This method sends the currently selected cards to the GameState.
-     * @return whether or not the action was accepted
+     * Called whenever the GameState class sends information to the player.
+     * @param action the information sent
      */
-    public boolean playCards() {
-        return this.game.sendInfo(new PlayCardAction(this, this.selectedCards));
+    public void receiveInfo(GameAction action) {
+        if (action instanceof DealCardAction) {
+            this.deck.addCard(((DealCardAction) action).getCard());
+        }
     }
-
-    /**
-     * Executes a pass action on this turn.
-     * @return whether or not the pass action was accepted
-     */
+        /**
+         * Executes a pass action on this turn. TODO: better message
+         */
     public boolean pass() {
         return this.game.sendInfo(new PassAction(this));
     }
@@ -79,4 +79,8 @@ public class HumanPlayer {
     }
 
     public Deck getValidCards() { return validCards; }
+
+    public void printCards() {
+        this.game.print(this.deck.toString());
+    }
 }
