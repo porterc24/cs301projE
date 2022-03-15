@@ -31,6 +31,25 @@ public class Deck {
         this.cards.addAll(orig.cards); // Copying all of the cards into this deck
     }
 
+    /**
+     * Removes a card from the given deck. It does not match the card objects, but their rank
+     * and suite.
+     * @param card
+     */
+    public void removeCard(Card card) {
+        Card flag = null;
+        for (int i = 0; i < cards.size(); i++) {
+            Card this_card = cards.get(i);
+            if (card.cardEquals(this_card)) {
+                flag = this_card;
+                break;
+            }
+        }
+        if (flag != null) {
+            this.cards.remove(flag);
+        }
+    }
+
     public void addCard(Card card) {
         this.cards.add(card);
     }

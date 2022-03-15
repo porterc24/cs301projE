@@ -183,6 +183,7 @@ public class PresidentGameState {
 
     public boolean pass(HumanPlayer player) {
         if (isPlayerTurn(player)) {
+            this.currTurn.nextTurn();
             return true;
         }
         return false;
@@ -241,6 +242,37 @@ public class PresidentGameState {
         }
         return player.selectedCards;
     }
+
+    /**
+     * This is how the GameState receieves information from other Player objects.
+     * PlayCardAction and PassAction are basically the only two things a player can do
+     * in this game.
+     * @param action The GameAction the player has made.
+     * @return Whether or not the move was valid or not
+     */
+    public boolean receiveInfo(GameAction action) {
+
+        // If the player has tried to play a card...
+        // NOT TESTED! Have no idea if this will work correctly!
+        if (action instanceof PlayCardAction) {
+            HumanPlayer player = action.getSender();
+
+            if (isPlayerTurn(player) && isValidMove(player.getSelectedCards())) {
+                playCard(player);
+                return true;
+            } else {
+                return false;
+            }
+        } // PlayCardAction
+
+        // If the player passess, go to the next turn
+        else if (action instanceof PassAction) {
+            HumanPlayer player = action.getSender();
+            return pass(player);
+        } // PassAction
+
+        return false;
+    } // receiveInfo
 
     public int getMaxPlayers() {
         return maxPlayers;
