@@ -3,7 +3,6 @@ package com.example.cs301proje;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -48,25 +47,34 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         game.setGameState(game_state);
 
         // Proj E testing:
-        runTest1();
+        testDealCards(game_state.maxPlayers);
     }
 
     /**
      * This test ensures that players are actually receiving cards from the GameState, and that
      * the sendInfo and receiveInfo methods on GameState and HumanPlayer are working respectively.
      */
-    public void runTest1() {
+    public void testDealCards(int players) {
 
         this.game.print("*****BEGINNING TEST 1*****");
+        this.game.getGameState().dealCards();
 
-        HumanPlayer player1 = this.game.getPlayers().get(0);
-        HumanPlayer player2 = this.game.getPlayers().get(1);
+        int flag = 0;
 
-        this.game.print("*****PLAYER 1 HAND*****");
-        player1.printCards();
-        this.game.print("*****PLAYER 2 HAND*****");
-        player2.printCards();
+        for (int i = 0; i < players; i++) {
+            HumanPlayer player = this.game.getPlayers().get(i);
+            if (player.getDeck().getNumCards() == (52 / players)) {
+                flag++;
+            }
+        }
+        if (flag == players) {
+            this.game.print("*****TEST 1 SUCCEEDED*****");
+        } else {
+            System.err.println("Test 1 failed.");
+            System.exit(-10234);
+        }
     }
+
 
     @Override
     public void onClick(View view) {

@@ -72,6 +72,10 @@ public class Deck {
         shuffle();
     }
 
+    public int getNumCards() {
+        return this.cards.size();
+    }
+
     public void shuffle() {
         Collections.shuffle(this.cards);
     }

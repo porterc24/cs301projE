@@ -33,8 +33,6 @@ public class PresidentGameState {
 
         this.currTurn = new TurnCounter(this.maxPlayers);
 
-        dealCards();
-
         state = CurrentState.INIT_ARRAYS;
 
     }
@@ -89,7 +87,7 @@ public class PresidentGameState {
 
                 //adds the card to the players deck/hand and removes it from masterDeck
                 //player.deck.cards.add(randomCard);
-                this.game.print("Sent card #" + i + " to player " + player.getId());
+                //this.game.print("Sent card #" + i + " to player " + player.getId());
                 this.game.sendInfo(new DealCardAction(
                         null,
                         randomCard
