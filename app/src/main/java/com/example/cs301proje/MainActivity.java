@@ -80,6 +80,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     /**
      * This test ensures that the TurnCounter, pass() method in the Player class, and the
      * isPlayerTurn() method in the GameState class are functioning.
+     *
+     * Makes sure that a player cannot pass when it's not their turn.
      */
     public void testTurnRotation(int players) {
 
@@ -92,6 +94,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         boolean success = true;
 
+        // Testing passing functionality:
         for (int i = 0; i < players; i++) {
             this.game.print("Current turn: " + game_state.getPlayerFromTurn().getId());
             HumanPlayer player = game_state.getPlayers().get(i);
@@ -101,10 +104,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
         }
 
-        // Now try passing when it's not their turn:
-        if (game_state.getPlayers().get(1).pass()) {
-            success = false;
+        // Testing to see if players are unable to pass when it's not their turn:
+        for (int i = 0; i < players; i++) {
+            HumanPlayer player = game_state.getPlayers().get(i);
+
+            if (!game_state.isPlayerTurn(player)) {
+                if (player.pass()) {
+                    success = false;
+                }
+            }
         }
+
 
         if (success) {
             this.game.print("*****TEST 2 SUCCEEDED*****");
