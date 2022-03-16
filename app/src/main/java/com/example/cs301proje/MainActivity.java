@@ -212,9 +212,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     /**
-     * This method tests the playing card functionality. It's pretty verbose at the moment, but it's
-     * the bare minimum and it works.
-     * TODO make this better!
+     * This method tests the playing card functionality. It's a bit of a mess, but it works!
      */
     public void testPlayCards(PresidentGameState game_state) {
 

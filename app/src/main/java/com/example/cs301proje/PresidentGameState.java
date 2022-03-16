@@ -20,8 +20,21 @@ public class PresidentGameState {
     PresidentGame game;
 
     /**
-     * Default setup for a game.
+     * Default ctor. Second one is definitely better, though.
+     */
+    public PresidentGameState() {
+        this.currentStage = 0;
+        this.discardPile = new Deck();
+        this.currTurn = new TurnCounter(this.maxPlayers);
+        this.inPlayPile = new CardStack();
+
+        state = CurrentState.INIT_ARRAYS;
+    }
+
+    /**
+     * Setps up a new GameState.
      * @param players The players to be added to the game
+     * @param game The PresidentGame reference
      */
     public PresidentGameState(ArrayList<HumanPlayer> players, PresidentGame game) {
 
@@ -41,17 +54,7 @@ public class PresidentGameState {
 
     }
 
-    public PresidentGameState() {
-        this.currentStage = 0;
-        this.discardPile = new Deck();
-        this.currTurn = new TurnCounter(this.maxPlayers);
-        this.inPlayPile = new CardStack();
-
-        state = CurrentState.INIT_ARRAYS;
-    }
-
     // Deep copy ctor for PresidentGameState
-
     public PresidentGameState(PresidentGameState orig) {
 
         this.players = orig.players; // Players should not be deep copied (passed by ref)
@@ -67,18 +70,6 @@ public class PresidentGameState {
         this.game = orig.game;
 
         state = CurrentState.INIT_OBJECTS;
-    }
-    /**
-     * This method prunes out all players except the given parameter from this GameState.
-     * Useful for when you want to hide information.
-     * @param player the player to be kept in the GameState. All other players are removed.
-     */
-    public void prunePlayers(HumanPlayer player) {
-        this.players.forEach(p -> {
-            if (p.getId() != player.getId()) {
-                this.players.remove(p);
-            }
-        });
     }
 
     /**
@@ -186,7 +177,6 @@ public class PresidentGameState {
 
     /**
      * Returns the HumanPlayer who's turn it is.
-     * @return
      */
     public HumanPlayer getPlayerFromTurn() {
         return this.players.get(currTurn.turn-1); // Turn counter starts from 1

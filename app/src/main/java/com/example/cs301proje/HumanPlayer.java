@@ -16,7 +16,7 @@ public class HumanPlayer {
 
     // This UUID is automatically generated each time a new HumanPlayer is made.
     // It's useful for comparing two player objects.
-    UUID id;
+    private final UUID id;
     boolean isOut;
 
     public HumanPlayer(Deck deck) {
@@ -57,7 +57,6 @@ public class HumanPlayer {
     }
 
     public void selectCard(Card card) {
-        card.setSelected(true); // TODO is this necessary?
         this.selectedCards.add(card);
     }
 
@@ -65,13 +64,9 @@ public class HumanPlayer {
         this.selectedCards.set(cards);
     }
 
-    public void deselectCard(Card card) {
-        card.setSelected(false);
-        this.selectedCards.set(card);
-    }
-
     /**
      * Attempts to play the current hand. Resets the currently selected cards if successful.
+     * TODO If attempt was valid, remove the cards that were just played from the player's hand.
      * @return whether or not the play was successful
      */
     public boolean playCards() {
@@ -97,12 +92,6 @@ public class HumanPlayer {
     public boolean getIsOut() {return this.isOut;}
 
     public CardStack getSelectedCardStack() { return this.selectedCards; }
-
-    public void clearDeck(Deck deck) {
-        for (int i = 0; i < deck.getCards().size(); i++) {
-            deck.getCards().remove(i);
-        }
-    }
 
     public Deck getValidCards() { return validCards; }
 
