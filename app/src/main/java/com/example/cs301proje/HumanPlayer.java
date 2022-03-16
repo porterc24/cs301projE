@@ -16,7 +16,7 @@ public class HumanPlayer {
 
     // This UUID is automatically generated each time a new HumanPlayer is made.
     // It's useful for comparing two player objects.
-    private final UUID id;
+    private final UUID id; // TODO Maybe make a PlayerIDFactory for assigning simple integer IDs instead of UUID?
     boolean isOut;
 
     public HumanPlayer(Deck deck) {

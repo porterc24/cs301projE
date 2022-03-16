@@ -228,7 +228,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         // Play a rank 2 card...
         player1.selectCard(player1.getDeck().getCards().get(1));
 
-        boolean flag = player1.playCards();
+        boolean flag = player1.playCards(); // Flag is true if the playCard move was valid
         if (flag) {
             this.game.print(game_state.getPlayPile().toString());
         }
