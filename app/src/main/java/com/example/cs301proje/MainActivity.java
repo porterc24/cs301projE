@@ -96,6 +96,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             HumanPlayer player = this.game.getPlayers().get(i);
             if (player.getDeck().getNumCards() == (52 / players)) {
                 flag++;
+                this.game.print("Player " + player.getId() + "'s deck contains " + 52/players
+                + " cards.");
             }
         }
         if (flag == players) {
@@ -116,7 +118,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         this.game.print("*****TEST 2 BEGIN*****");
 
-
         HumanPlayer player1 = this.game.getPlayers().get(0);
         HumanPlayer player2 = this.game.getPlayers().get(1);
 
@@ -132,6 +133,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             if (game_state.getPlayerFromTurn().getId().equals(player.getId())) {
                 success = false;
             }
+            else {
+                this.game.print("Player " + player.getId() + " passes their turn.");
+            }
         }
 
         // Testing to see if players are unable to pass when it's not their turn:
@@ -141,6 +145,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             if (!game_state.isPlayerTurn(player)) {
                 if (player.pass()) {
                     success = false;
+                }
+                else {
+                    this.game.print("Player " + player.getId() + " cannot pass. It is not their" +
+                            "turn");
                 }
             }
         }
@@ -163,6 +171,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         this.game.print("*****TEST 3 BEGIN*****");
         int players = game_state.getMaxPlayers();
         game_state.clearDecks();
+        this.game.print("Clearing decks.");
 
         boolean success = true;
 
@@ -171,6 +180,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             HumanPlayer player = game_state.getPlayers().get(i);
             if (player.getDeck().getNumCards() != 0) {
                 success = false;
+            }
+            else {
+                this.game.print("There are 0 cards in Player " + player.getId() + "'s deck.");
             }
         }
 
@@ -221,6 +233,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         boolean success = true;
         Deck rigged_deck = new Deck();
         rigged_deck.generateRiggedDeck();
+        this.game.print("Generating rigged deck and dealing.");
 
         game_state.dealRiggedCards(rigged_deck);
 
@@ -231,6 +244,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         boolean flag = player1.playCards(); // Flag is true if the playCard move was valid
         if (flag) {
             this.game.print(game_state.getPlayPile().toString());
+        }
+        else {
+            this.game.print("Error: move not valid, something went wrong.");
         }
 
         HumanPlayer player2 = game_state.getPlayerFromTurn();
@@ -248,11 +264,22 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         if (flag) {
             this.game.print(game_state.getPlayPile().toString());
         }
+        else {
+            this.game.print("Illegal move!");
+        }
 
         // Playing multiple cards at once
         player1.selectCard(player1.getDeck().getCards().get(6));
+        this.game.print("Player " + player1.getId() + " selects ");
+        this.game.print(player1.getSelectedCardStack().getCard(0).toString());
+
         player1.selectCard(player1.getDeck().getCards().get(7));
+        this.game.print("Player " + player1.getId() + " selects ");
+        this.game.print(player1.getSelectedCardStack().getCard(1).toString());
+
         player1.selectCard(player1.getDeck().getCards().get(8));
+        this.game.print("Player " + player1.getId() + " selects ");
+        this.game.print(player1.getSelectedCardStack().getCard(2).toString());
 
         flag = player1.playCards();
         if (flag) {
@@ -264,7 +291,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         // Attempting to play a single card
         player2.getSelectedCardStack().clear();
+        this.game.print("Clearing selectedCardStack.");
+
         player2.selectCard(player2.getDeck().getCards().get(9));
+        this.game.print("Player " + player2.getId() + " selects ");
+        this.game.print(player2.getSelectedCardStack().getCard(0).toString());
+
         flag = player2.playCards();
         if (flag) {
             this.game.print(game_state.getPlayPile().toString());
@@ -275,6 +307,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         // Attempting to play 2 cards
         player2.selectCard(player2.getDeck().getCards().get(9));
+        this.game.print("Player " + player2.getId() + " selects ");
+        this.game.print(player2.getSelectedCardStack().getCard(1).toString());
+
         flag = player2.playCards();
         if (flag) {
             this.game.print(game_state.getPlayPile().toString());
