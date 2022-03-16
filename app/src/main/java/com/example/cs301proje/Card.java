@@ -1,5 +1,13 @@
 package com.example.cs301proje;
 
+/**
+ * @author Margo Brown
+ * @author Claire Porter
+ * @author Renn Torigoe
+ * @author Max Woods
+ *
+ * Pretty simply class. Represents card data (rank and suite).
+ */
 public class Card {
     private final int rank;
     private final int suite;

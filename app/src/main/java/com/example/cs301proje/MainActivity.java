@@ -11,6 +11,12 @@ import android.widget.EditText;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+/**
+ * @author Margo Brown
+ * @author Claire Porter
+ * @author Renn Torigoe
+ * @author Max Woods
+ */
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
     Button runTest;
@@ -31,6 +37,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         this.game = new PresidentGame();
         game.setEditText(this.editText);
 
+    }
+
+    @Override
+    public void onClick(View view) {
+        this.editText.setText("");
         ArrayList<HumanPlayer> players = new ArrayList<>();
 
         HumanPlayer player1 = new HumanPlayer(game);
@@ -77,7 +88,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         } else {
             this.game.print("*****COPY TEST SUCCESS*****");
         }
-
     }
 
     /**
@@ -230,6 +240,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         boolean flag = player1.playCards(); // Flag is true if the playCard move was valid
         if (flag) {
+            this.game.print("Current play pile:");
             this.game.print(game_state.getPlayPile().toString());
         }
 
@@ -239,6 +250,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         flag = player2.playCards();
         if (flag) {
+            this.game.print("Current play pile:");
             this.game.print(game_state.getPlayPile().toString());
         }
 
@@ -246,6 +258,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         player2.selectCard(player2.getDeck().getCards().get(5));
         flag = player2.playCards();
         if (flag) {
+            this.game.print("Current play pile:");
             this.game.print(game_state.getPlayPile().toString());
         }
 
@@ -256,6 +269,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         flag = player1.playCards();
         if (flag) {
+            this.game.print("Current play pile:");
             this.game.print(game_state.getPlayPile().toString());
         } else {
             this.game.print("Invalid move!");
@@ -288,6 +302,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         player2.selectCard(player2.getDeck().getCards().get(9));
         flag = player2.playCards();
         if (flag) {
+            this.game.print("Current play pile:");
             this.game.print(game_state.getPlayPile().toString());
         } else {
             this.game.print("Invalid move!");
@@ -303,10 +318,5 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             System.exit(-10234);
         }
 
-    }
-
-    @Override
-    public void onClick(View view) {
-        this.editText.setText(game.getEditText());
     }
 }
