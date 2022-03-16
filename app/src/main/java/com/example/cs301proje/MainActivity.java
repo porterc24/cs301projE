@@ -228,7 +228,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         HumanPlayer player1 = game_state.getPlayerFromTurn();
         // Play a rank 2 card...
-        player1.selectCard(player1.getDeck().cards.get(1));
+        player1.selectCard(player1.getDeck().getCards().get(1));
 
         boolean flag = player1.playCards();
         if (flag) {
@@ -237,7 +237,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         HumanPlayer player2 = game_state.getPlayerFromTurn();
         // Play a rank 3 card...
-        player2.selectCard(player2.getDeck().cards.get(3));
+        player2.selectCard(player2.getDeck().getCards().get(3));
 
         flag = player2.playCards();
         if (flag) {
@@ -245,16 +245,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
 
         // Illegal move...
-        player2.selectCard(player2.getDeck().cards.get(5));
+        player2.selectCard(player2.getDeck().getCards().get(5));
         flag = player2.playCards();
         if (flag) {
             this.game.print(game_state.getPlayPile().toString());
         }
 
         // Playing multiple cards at once
-        player1.selectCard(player1.getDeck().cards.get(6));
-        player1.selectCard(player1.getDeck().cards.get(7));
-        player1.selectCard(player1.getDeck().cards.get(8));
+        player1.selectCard(player1.getDeck().getCards().get(6));
+        player1.selectCard(player1.getDeck().getCards().get(7));
+        player1.selectCard(player1.getDeck().getCards().get(8));
 
         flag = player1.playCards();
         if (flag) {
@@ -266,7 +266,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         // Attempting to play a single card
         player2.getSelectedCardStack().clear();
-        player2.selectCard(player2.getDeck().cards.get(9));
+        player2.selectCard(player2.getDeck().getCards().get(9));
         flag = player2.playCards();
         if (flag) {
             this.game.print(game_state.getPlayPile().toString());
@@ -276,7 +276,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
 
         // Attempting to play 2 cards
-        player2.selectCard(player2.getDeck().cards.get(9));
+        player2.selectCard(player2.getDeck().getCards().get(9));
         flag = player2.playCards();
         if (flag) {
             this.game.print(game_state.getPlayPile().toString());
@@ -287,7 +287,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
 
         // Attempting to play 3 cards
-        player2.selectCard(player2.getDeck().cards.get(9));
+        player2.selectCard(player2.getDeck().getCards().get(9));
         flag = player2.playCards();
         if (flag) {
             this.game.print(game_state.getPlayPile().toString());
