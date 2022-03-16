@@ -2,14 +2,17 @@ package com.example.cs301proje;
 import android.util.Log;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 
 /**
  * This class is used for managing groups of cards. It contains useful methods for generating
  * decks, shuffling, and picking out selections of cards from the deck.
  */
 public class Deck {
-    ArrayList<Card> cards;
+
+    private ArrayList<Card> cards;
     public final int MAX_CARDS = 52;
 
     public Deck() {
@@ -117,5 +120,9 @@ public class Deck {
 
     public void addCards(ArrayList<Card> that_cards) {
         this.cards.addAll(that_cards);
+    }
+
+    public ArrayList<Card> getCards() {
+        return this.cards;
     }
 }

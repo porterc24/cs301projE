@@ -5,11 +5,12 @@ import java.util.UUID;
 
 // TODO: Make a 'Player' parent/abstract class
 public class HumanPlayer {
-    Deck deck;
-    Deck validCards;
-    CardStack selectedCards;
 
-    PresidentGame game;
+    private Deck deck;
+    private Deck validCards;
+    private CardStack selectedCards;
+
+    private PresidentGame game;
 
     int score;
 
@@ -69,6 +70,10 @@ public class HumanPlayer {
         this.selectedCards.set(card);
     }
 
+    /**
+     * Attempts to play the current hand. Resets the currently selected cards if successful.
+     * @return whether or not the play was successful
+     */
     public boolean playCards() {
 
         boolean flag = this.game.sendInfo(new PlayCardAction(this, this.selectedCards));
@@ -94,8 +99,8 @@ public class HumanPlayer {
     public CardStack getSelectedCardStack() { return this.selectedCards; }
 
     public void clearDeck(Deck deck) {
-        for (int i = 0; i < deck.cards.size(); i++) {
-            deck.cards.remove(i);
+        for (int i = 0; i < deck.getCards().size(); i++) {
+            deck.getCards().remove(i);
         }
     }
 
@@ -103,5 +108,9 @@ public class HumanPlayer {
 
     public void printCards() {
         this.game.print(this.deck.toString());
+    }
+
+    public PresidentGame getGame() {
+        return this.game;
     }
 }

@@ -32,7 +32,7 @@ public class CardStack {
 
     // Copy ctor
     public CardStack(CardStack that) {
-        set(that.getCards());
+        set(that.cards());
     }
 
     public void set(Card card) {
@@ -93,7 +93,7 @@ public class CardStack {
         return this.cards.get(0).getRank();
     }
 
-    public ArrayList<Card> getCards() {
+    public ArrayList<Card> cards() {
         return this.cards;
     }
 

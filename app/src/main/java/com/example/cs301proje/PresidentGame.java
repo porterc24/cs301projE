@@ -9,7 +9,6 @@ import java.util.ArrayList;
  * This game class manages basically everything. It handles the sending of information between
  * GameStates and players.
  *
- * **ONCLICKLISTENER IS FOR DEBUGGING PURPOSES FOR PROJ E**
  */
 public class PresidentGame {
 

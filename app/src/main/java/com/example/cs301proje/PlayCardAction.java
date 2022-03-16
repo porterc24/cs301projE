@@ -10,6 +10,7 @@ public class PlayCardAction extends GameAction{
     public PlayCardAction(HumanPlayer sender, CardStack played_cards) {
         super(sender);
         this.played_cards = played_cards;
+        sender.getGame().print("Player " + sender.getId() + " attempted to play " + played_cards.toString());
     }
 
     public CardStack getPlayedCards() {

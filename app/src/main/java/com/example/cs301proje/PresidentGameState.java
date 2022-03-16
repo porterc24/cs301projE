@@ -96,13 +96,13 @@ public class PresidentGameState {
         for (HumanPlayer player : this.players) {
             for (int i = 0; i < (52 / players.size()); i++) {
                 //selects a random card of the 52 in masterDeck
-                Card randomCard = (masterDeck.cards.get((int) Math.random() * masterDeck.MAX_CARDS));
+                Card randomCard = (masterDeck.getCards().get((int) Math.random() * masterDeck.MAX_CARDS));
 
                 this.game.sendInfo(new DealCardAction(
                         null,
                         randomCard
                 ), player);
-                masterDeck.cards.remove(randomCard);
+                masterDeck.getCards().remove(randomCard);
                 //Log.i("DECKS", "Value of i: " + i);
             }
         }
@@ -124,7 +124,7 @@ public class PresidentGameState {
 
         for (HumanPlayer player : this.players) {
             for (int i = 0; i < (52 / players.size()); i++) {
-                Card riggedCard = (rigged_deck.cards.get(i));
+                Card riggedCard = (rigged_deck.getCards().get(i));
                 this.game.sendInfo(new DealCardAction(
                         null,
                         riggedCard
@@ -157,14 +157,18 @@ public class PresidentGameState {
                 ", Players [ ");
         for (HumanPlayer player: players) {
             info.append("(Player " + playerNo + ", ID: " + player.getId() + ", Cards: ");
-            for (Card card: player.deck.cards) {
+            for (Card card: player.getDeck().getCards()) {
                 info.append("{ " + CardValues.getCardValue(card.getRank()) + " of " + CardSuites.getSuiteName(card.getSuite()) + " } ");
             }
             info.append(", " + "Points: " + player.getScore() + " ) \n");
             playerNo++;
         }
 
-        info.append(" ]}");
+        info.append(" ]");
+        info.append("\n");
+        info.append("[PlayPile Info: ");
+        info.append(this.inPlayPile.toString());
+        info.append("]}");
         return info.toString();
     }
 
@@ -202,8 +206,8 @@ public class PresidentGameState {
 
     public boolean isValidMove(Deck deck) {
         //TODO
-        if (deck.cards.get(0).getRank() > inPlayPile.getStackRank()) {
-            if (deck.cards.size() >= inPlayPile.getStackSize()) {
+        if (deck.getCards().get(0).getRank() > inPlayPile.getStackRank()) {
+            if (deck.getCards().size() >= inPlayPile.getStackSize()) {
                 return true;
             }
         }
@@ -219,7 +223,7 @@ public class PresidentGameState {
      */
     public boolean playCards(HumanPlayer player) {
         if (isPlayerTurn(player)) {
-            inPlayPile.set(player.getSelectedCardStack().getCards());
+            inPlayPile.set(player.getSelectedCardStack().cards());
             inPlayPile.print();
             this.currTurn.nextTurn();
             return true;
@@ -257,10 +261,10 @@ public class PresidentGameState {
         // checking if the player is the first to play cards
         if (inPlayPile.getStackSize() == 0) {
             // pick a random card from the player's deck
-            Card card = player.deck.cards.get((int) Math.random() * player.deck.cards.size());
+            Card card = player.getDeck().getCards().get((int) Math.random() * player.getDeck().getCards().size());
 
             // add all instances of that card to the selectedCards deck
-            for (Card c: player.deck.cards) {
+            for (Card c: player.getDeck().getCards()) {
                 if (c.getRank() == card.getRank()) {
                     card_buffer.add(c);
                 }
@@ -268,9 +272,9 @@ public class PresidentGameState {
         }
         else {
             // looping through the player's cards and adding the valid ones to the validCards deck
-            for (Card card: player.deck.cards) {
+            for (Card card: player.getDeck().getCards()) {
                 if (card.getRank() >= inPlayPile.getStackRank()) {
-                    player.validCards.addCard(card);
+                    player.getValidCards().addCard(card);
                 }
             }
         }
@@ -278,22 +282,22 @@ public class PresidentGameState {
         // repeat while the player's selectedCards doesn't equal the inPlayPile's cards
         // i.e. the player only selects one higher card when a pair of cards is in play
 
-        while (player.selectedCards.getStackSize() < inPlayPile.getStackSize()) {
+        while (player.getSelectedCardStack().getStackSize() < inPlayPile.getStackSize()) {
             // clear the deck from any past iterations of the loop
             player.getSelectedCardStack().clear();
 
             // picking a random card from the validCards deck to play
-            Card selectedMoveCard = player.validCards.cards.get((int) (Math.random() * player.validCards.cards.size()));
+            Card selectedMoveCard = player.getValidCards().getCards().get((int) (Math.random() * player.getValidCards().getCards().size()));
 
             // looping through the player's valid cards and adding all of the same rank cards to the
             // selectedCards deck
-            for (Card card: player.validCards.cards) {
+            for (Card card: player.getValidCards().getCards()) {
                 if (card.getRank() == selectedMoveCard.getRank()) {
-                    player.selectedCards.add(card);
+                    player.getSelectedCardStack().add(card);
                 }
             }
         }
-        return player.selectedCards;
+        return player.getSelectedCardStack();
     }
 
     /**
@@ -381,5 +385,14 @@ public class PresidentGameState {
 
     public void setGame(PresidentGame game) {
         this.game = game;
+    }
+
+    public void addPlayer(HumanPlayer player) {
+        if (this.players == null || this.players.size() == 0) {
+            this.players = new ArrayList<>();
+        }
+        this.players.add(player);
+        this.maxPlayers = this.players.size();
+        this.currTurn = new TurnCounter(this.maxPlayers);
     }
 }

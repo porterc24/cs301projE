@@ -35,38 +35,60 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         HumanPlayer player1 = new HumanPlayer(game);
         HumanPlayer player2 = new HumanPlayer(game);
-        //HumanPlayer player3 = new HumanPlayer(game);
-        //HumanPlayer player4 = new HumanPlayer(game);
 
         players.add(player1);
         players.add(player2);
-        //players.add(player3);
-        //players.add(player4);
 
-        PresidentGameState game_state = new PresidentGameState(players,game);
+        // Initializing with default ctor and then setting player and game:
+        PresidentGameState firstInstance = new PresidentGameState();
+        firstInstance.addPlayer(player1);
+        firstInstance.addPlayer(player2);
+        firstInstance.setGame(game);
+        PresidentGameState firstCopy = new PresidentGameState(firstInstance);
 
         game.setPlayers(players);
-        game.setGameState(game_state);
+        game.setGameState(firstInstance);
 
         // Proj E testing:
         // PLAYERS MUST BE >= 2
         // TODO: Meta-tester method that tests all of these for different numbers of players
         // TODO: Use deep copy for testing and have all these be called by Run Test button
-        testDealCards(game_state.maxPlayers);
-        testTurnRotation(game_state.maxPlayers);
-        testClearDecks(game_state.maxPlayers);
+        testDealCards(firstInstance);
+        testTurnRotation(firstInstance);
+        testClearDecks(firstInstance);
         testCardStack();
-        testPlayCards(game_state.maxPlayers);
+        testPlayCards(firstInstance);
+
+        PresidentGameState secondInstance = new PresidentGameState();
+        secondInstance.addPlayer(player1);
+        secondInstance.addPlayer(player2);
+        secondInstance.setGame(game);
+
+        PresidentGameState secondCopy = new PresidentGameState(secondInstance);
+
+        // The output of these two print statements should be identical!!!!
+        this.game.print("*****FIRST COPY*****");
+        this.game.print(firstCopy.toString());
+        this.game.print("*****SECOND COPY*****");
+        this.game.print(secondCopy.toString());
+
+        if (!firstCopy.toString().equals(secondCopy.toString())) {
+            this.game.print("*****COPY TEST FAILED*****");
+        } else {
+            this.game.print("*****COPY TEST SUCCESS*****");
+        }
+
     }
 
     /**
      * This test ensures that players are actually receiving cards from the GameState, and that
      * the sendInfo and receiveInfo methods on GameState and HumanPlayer are working respectively.
      */
-    public void testDealCards(int players) {
+    public void testDealCards(PresidentGameState game_state) {
 
         this.game.print("*****TEST 1 BEGIN*****");
-        this.game.getGameState().dealCards();
+        game_state.dealCards();
+        int players = game_state.getMaxPlayers();
 
         int flag = 0;
 
@@ -90,14 +112,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
      *
      * Makes sure that a player cannot pass when it's not their turn.
      */
-    public void testTurnRotation(int players) {
+    public void testTurnRotation(PresidentGameState game_state) {
 
         this.game.print("*****TEST 2 BEGIN*****");
+
 
         HumanPlayer player1 = this.game.getPlayers().get(0);
         HumanPlayer player2 = this.game.getPlayers().get(1);
 
-        PresidentGameState game_state = this.game.getGameState();
+        int players = game_state.getMaxPlayers();
 
         boolean success = true;
 
@@ -135,11 +158,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     /**
      * This test ensures that the clearDecks() method in the GameState works. It clears the decks,
      * then checks to make sure that there are no cards in any of the player's decks.
-     * @param players
      */
-    public void testClearDecks(int players) {
+    public void testClearDecks(PresidentGameState game_state) {
         this.game.print("*****TEST 3 BEGIN*****");
-        PresidentGameState game_state = this.game.getGameState();
+        int players = game_state.getMaxPlayers();
         game_state.clearDecks();
 
         boolean success = true;
@@ -193,16 +215,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
      * This method tests the playing card functionality. It's pretty verbose at the moment, but it's
      * the bare minimum and it works.
      * TODO make this better!
-     * @param players
      */
-    public void testPlayCards(int players) {
+    public void testPlayCards(PresidentGameState game_state) {
 
         this.game.print("*****TEST 5 BEGIN*****");
+        int players = game_state.getMaxPlayers();
         boolean success = true;
         Deck rigged_deck = new Deck();
         rigged_deck.generateRiggedDeck();
 
-        PresidentGameState game_state = this.game.getGameState();
         game_state.dealRiggedCards(rigged_deck);
 
         HumanPlayer player1 = game_state.getPlayerFromTurn();
@@ -218,8 +239,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         // Play a rank 3 card...
         player2.selectCard(player2.getDeck().cards.get(3));
 
-        Log.i("Deck: ", player1.getDeck().toString());
-
         flag = player2.playCards();
         if (flag) {
             this.game.print(game_state.getPlayPile().toString());
@@ -233,7 +252,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
 
         // Playing multiple cards at once
-        ArrayList<Card> two_cards = new ArrayList<Card>();
         player1.selectCard(player1.getDeck().cards.get(6));
         player1.selectCard(player1.getDeck().cards.get(7));
         player1.selectCard(player1.getDeck().cards.get(8));
@@ -247,7 +265,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
 
         // Attempting to play a single card
-        player2.selectedCards.clear();
+        player2.getSelectedCardStack().clear();
         player2.selectCard(player2.getDeck().cards.get(9));
         flag = player2.playCards();
         if (flag) {
