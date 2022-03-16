@@ -24,6 +24,7 @@ public class PresidentGameState {
      * @param players The players to be added to the game
      */
     public PresidentGameState(ArrayList<HumanPlayer> players, PresidentGame game) {
+
         this.players = players;
         this.currentStage = 0;
         this.maxPlayers = players.size();
@@ -40,7 +41,17 @@ public class PresidentGameState {
 
     }
 
+    public PresidentGameState() {
+        this.currentStage = 0;
+        this.discardPile = new Deck();
+        this.currTurn = new TurnCounter(this.maxPlayers);
+        this.inPlayPile = new CardStack();
+
+        state = CurrentState.INIT_ARRAYS;
+    }
+
     // Deep copy ctor for PresidentGameState
+
     public PresidentGameState(PresidentGameState orig) {
 
         this.players = orig.players; // Players should not be deep copied (passed by ref)
@@ -57,7 +68,6 @@ public class PresidentGameState {
 
         state = CurrentState.INIT_OBJECTS;
     }
-
     /**
      * This method prunes out all players except the given parameter from this GameState.
      * Useful for when you want to hide information.
@@ -361,5 +371,15 @@ public class PresidentGameState {
             return true;
         }
         return false;
+    }
+
+    public void setPlayers(ArrayList<HumanPlayer> players) {
+        this.players = players;
+        this.maxPlayers = players.size();
+        this.currTurn = new TurnCounter(this.maxPlayers);
+    }
+
+    public void setGame(PresidentGame game) {
+        this.game = game;
     }
 }
