@@ -6,11 +6,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * This class is used to manage the current PlayPile for the GameState. Instead of removing and
- * re-adding elements to an ArrayList everytime, you can just add() things to the stack and not
- * have to worry about previous elements. Supports adding multiple cards and one card at a time.
+ * This class is used to manage the card's in a player's selection, and the game's PlayPile.
+ * It's basically just a list of cards, except that it has a special rule: cards cannot be added
+ * to the stack if they have a different rank from the cards already in the stack. If there are no
+ * cards, then it'll just add it to the stack.
  *
- * If
+ * set -> sets the contents of the stack. If set to a list of cards, all the cards in the list
+ * must be the same rank, otherwise it will be rejected.
+ *
+ * add -> adds a card to the stack. Must have the same rank as the other cards in the stack.
+ *
+ * clear -> clears the stack.
  */
 public class CardStack {
 
@@ -44,7 +50,7 @@ public class CardStack {
     }
 
     // Ensures that this particular card is of the same rank in the deck.
-    public boolean validateCard(Card card) {
+    private boolean validateCard(Card card) {
         if (this.cards == null) {
             return true;
         }
@@ -54,8 +60,8 @@ public class CardStack {
         return card.getRank() == getStackRank();
     }
 
-    // Ensures that every card is of the same rank in the deck.
-    public boolean validateCards(List<Card> card_list) {
+    // Ensures that every card is of the same rank as each other.
+    private boolean validateCards(List<Card> card_list) {
         boolean flag = true;
         // Checking if the given card list contains all the same card ranks
         for (int i = 0; i < card_list.size(); i++) {
@@ -78,7 +84,9 @@ public class CardStack {
     }
 
     public void add(List<Card> card_list) {
-        this.cards.addAll(card_list);
+        if (validateCards(card_list)) {
+            this.cards.addAll(card_list);
+        }
     }
 
     public int getStackRank() {
