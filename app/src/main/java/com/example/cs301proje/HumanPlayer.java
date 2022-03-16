@@ -3,6 +3,15 @@ package com.example.cs301proje;
 import java.util.List;
 import java.util.UUID;
 
+/**
+ * @author Margo Brown
+ * @author Claire Porter
+ * @author Renn Torigoe
+ * @author Max Woods
+ *
+ * Manages information about HumanPlayers. Contains methods for playing cards, passing, etc.
+ * Information is received from the GameState/Game via the receiveInfo() method
+ */
 // TODO: Make a 'Player' parent/abstract class
 public class HumanPlayer {
 
@@ -65,7 +74,8 @@ public class HumanPlayer {
     }
 
     /**
-     * Attempts to play the current hand. Resets the currently selected cards if successful.
+     * Attempts to play the current hand. Resets the currently selected cards if successful. If
+     * the play was successful, the game progresses to the next turn.
      * TODO If attempt was valid, remove the cards that were just played from the player's hand.
      * @return whether or not the play was successful
      */

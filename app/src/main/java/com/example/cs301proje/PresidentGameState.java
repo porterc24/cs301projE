@@ -3,6 +3,22 @@ package com.example.cs301proje;
 import android.util.Log;
 import java.util.ArrayList;
 
+/**
+ * @author Margo Brown
+ * @author Claire Porter
+ * @author Renn Torigoe
+ * @author Max Woods
+ *
+ * This class contains information about the current state of the game, e.g:
+ * - The players and their scores, hands, etc.
+ * - The cards in play
+ * - The stage of the game (setup, play, etc.)
+ *
+ * Information is transferred between the GameState and the Player through the PresidentGame, which
+ * uses the sendInfo() method to send GameAction objects. It's kind of like how two clients send
+ * each other packets via a server.
+ *
+ */
 public class PresidentGameState {
     // TODO
     // implement a method that deals with invalid moves (when a player cannot play a card)
@@ -85,6 +101,7 @@ public class PresidentGameState {
 
 
         for (HumanPlayer player : this.players) {
+            this.game.print("Sending deck slice to player " + player.getId());
             for (int i = 0; i < (52 / players.size()); i++) {
                 //selects a random card of the 52 in masterDeck
                 Card randomCard = (masterDeck.getCards().get((int) Math.random() * masterDeck.MAX_CARDS));
@@ -224,8 +241,10 @@ public class PresidentGameState {
     public boolean pass(HumanPlayer player) {
         if (isPlayerTurn(player)) {
             this.currTurn.nextTurn();
+            this.game.print("Pass accepted.");
             return true;
         }
+        this.game.print("Pass rejected. Not player's turn.");
         return false;
     }
 
@@ -291,7 +310,7 @@ public class PresidentGameState {
     }
 
     /**
-     * This is how the GameState receieves information from other Player objects.
+     * This is how the GameState receives information from other Player objects.
      * PlayCardAction and PassAction are basically the only two things a player can do
      * in this game.
      * @param action The GameAction the player has made.
@@ -300,7 +319,6 @@ public class PresidentGameState {
     public boolean receiveInfo(GameAction action) {
 
         // If the player has tried to play a card...
-        // NOT TESTED! Have no idea if this will work correctly!
         if (action instanceof PlayCardAction) {
             HumanPlayer player = action.getSender();
             PlayCardAction pca = (PlayCardAction) action;
@@ -316,19 +334,23 @@ public class PresidentGameState {
                 // Rules for playing cards
                 if (this.inPlayPile.getStackSize() <= selected_cards.getStackSize()) {
                     if (this.inPlayPile.getStackRank() < selected_cards.getStackRank()) {
-                        this.game.print("Card rank is greater. Playing card.");
+                        this.game.print("Card accepted.");
                         playCards(player);
                         return true;
+                    } else {
+                        this.game.print("Card rejected. Rank is too low.");
                     }
+                } else {
+                    this.game.print("Card rejected. Card quantity is too low.");
                 }
-
                 return false;
             } else {
+                this.game.print("Card rejected. Not the player's turn.");
                 return false;
             }
         } // PlayCardAction
 
-        // If the player passess, go to the next turn
+        // If the player passes, go to the next turn
         else if (action instanceof PassAction) {
             HumanPlayer player = action.getSender();
             return pass(player);

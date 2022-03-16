@@ -7,6 +7,11 @@ import java.util.Collections;
 import java.util.List;
 
 /**
+ * @author Margo Brown
+ * @author Claire Porter
+ * @author Renn Torigoe
+ * @author Max Woods
+ *
  * This class is used for managing groups of cards. It contains useful methods for generating
  * decks, shuffling, and picking out selections of cards from the deck.
  */
@@ -77,18 +82,18 @@ public class Deck {
 
     public void generateRiggedDeck() {
         ArrayList<Card> deck_cards = new ArrayList<>();
-        deck_cards.add(new Card(1, 1));
-        deck_cards.add(new Card(2, 1));
         deck_cards.add(new Card(3, 1));
         deck_cards.add(new Card(4, 1));
         deck_cards.add(new Card(5, 1));
-        deck_cards.add(new Card(5, 1));
-        deck_cards.add(new Card(6, 1));
-        deck_cards.add(new Card(6, 1));
         deck_cards.add(new Card(6, 1));
         deck_cards.add(new Card(7, 1));
         deck_cards.add(new Card(7, 1));
-        deck_cards.add(new Card(7, 1));
+        deck_cards.add(new Card(8, 1));
+        deck_cards.add(new Card(8, 1));
+        deck_cards.add(new Card(8, 1));
+        deck_cards.add(new Card(9, 1));
+        deck_cards.add(new Card(9, 1));
+        deck_cards.add(new Card(9, 1));
         deck_cards.add(new Card(10, 1));
 
         for (int i = 0; i < 4; i++) {

@@ -1,6 +1,8 @@
 package com.example.cs301proje;
 
 /**
+ * @author Max Woods
+ *
  * This is used whenever the player plays some cards.
  */
 public class PlayCardAction extends GameAction{

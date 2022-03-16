@@ -6,7 +6,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * This class is used to manage the card's in a player's selection, and the game's PlayPile.
+ * @author Max Woods
+ *
+ * This class is used to manage the cards in a player's selection, and the game's PlayPile.
  * It's basically just a list of cards, except that it has a special rule: cards cannot be added
  * to the stack if they have a different rank from the cards already in the stack. If there are no
  * cards, then it'll just add it to the stack.
@@ -49,6 +51,22 @@ public class CardStack {
         }
     }
 
+    public void add(Card card) {
+        if (this.cards == null || this.cards.size() == 0) {
+            set(card);
+            return;
+        }
+        if (validateCard(card)) {
+            this.cards.add(card);
+        }
+    }
+
+    public void add(List<Card> card_list) {
+        if (validateCards(card_list)) {
+            this.cards.addAll(card_list);
+        }
+    }
+
     // Ensures that this particular card is of the same rank in the deck.
     private boolean validateCard(Card card) {
         if (this.cards == null) {
@@ -70,23 +88,7 @@ public class CardStack {
                 return false;
             }
         }
-            return true;
-    }
-
-    public void add(Card card) {
-        if (this.cards == null || this.cards.size() == 0) {
-            set(card);
-            return;
-        }
-        if (validateCard(card)) {
-            this.cards.add(card);
-        }
-    }
-
-    public void add(List<Card> card_list) {
-        if (validateCards(card_list)) {
-            this.cards.addAll(card_list);
-        }
+        return true;
     }
 
     public int getStackRank() {

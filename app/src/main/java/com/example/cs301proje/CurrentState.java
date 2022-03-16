@@ -1,5 +1,10 @@
 package com.example.cs301proje;
 
+/**
+ * @author Claire Porter
+ *
+ * Records the current stage of the game. Used by GameState.
+ */
 public enum CurrentState {
     INIT_ARRAYS,
     INIT_OBJECTS,

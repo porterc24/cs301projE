@@ -6,8 +6,9 @@ import android.widget.EditText;
 import java.util.ArrayList;
 
 /**
+ * @author Max Woods
  * This game class manages basically everything. It handles the sending of information between
- * GameStates and players.
+ * GameStates and players using the sendInfo() method.
  *
  */
 public class PresidentGame {
@@ -29,7 +30,7 @@ public class PresidentGame {
         return this.game_state.receiveInfo(action);
     }
 
-    // For printing debug to the screen
+    // For printing debug to the screen (used for ProjE)
     public void print(String msg) {
         this.editText.setText(this.editText.getText() + "\n" + msg);
     }
